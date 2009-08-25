@@ -1,0 +1,149 @@
+= Sphinxsearchlogic
+
+Sphinxsearchlogic is for ThinkingSphinx what Searchlogic is for ActiveRecord.. or at least something similar.
+
+== Helpful links
+
+* <b>Github:</b> http://github.com/joost/sphinxsearchlogic
+
+Sphinxsearchlogic is largely based on / using:
+
+* <b>Searchlogic:</b> http://github.com/binarylogic/searchlogic/
+* <b>ThinkingSphinx:</b> http://freelancing-god.github.com/ts/en/
+* <b>Sphinx:</b> http://www.sphinxsearch.com/
+
+If you're not familiar with ThinkingSphinx check {this presentation!}[http://www.slideshare.net/freelancing_god/solving-the-riddle-of-search-using-sphinx-with-rails-1406954]
+
+== Install
+
+First you need Sphinx and ThinkingSphinx. Simply because they rock. Check the ThinkingSphinx pages for this.
+
+Install as plugin from Github.
+
+  ./script/plugin install git://github.com/joost/sphinxsearchlogic.git
+
+== Usage
+
+Use Sphinxsearchlogic as you use the Searchlogic search method:
+
+ @search = Movie.sphinxsearchlogic(params[:search])
+ 
+The search params you can pass:
+
+Search:
+
+  :all => 'something'     # search('something') 
+  :name => 'john'         # search(:conditions => {:name => 'john'})
+
+Filters:
+
+  :with_age => 20         # search(:with => {:age => 20})
+  :with_age => [21, 22]   # search(:with => {:age => [21, 22]})
+  :with_age => 20..25     # search(:with => {:age => 20..25})
+                           
+  :without_age => 20      # search(:without => {:age => 20})
+  
+For MVAs you can also use:
+
+  :with_all_tags => [1,2,3] # search(:with_all => {:tags => [1,2,3]})
+
+Thinking Sphinx scopes:
+  :my_scope => true       # my_scope (actually called with my_scope(true))
+  :some_scope => 'sweet'  # some_scope(sweet)
+  
+=== Ordering
+
+Ordering is implemented similar to Searchlogic.
+
+  :order => 'ascend_by_created_at'   # :order => :attribute, 
+  :order => 'descend_by_created_at'  # :order => :attribute, :sort_mode => :desc
+More advanced ordering? Use scopes! Like for {:order => 'rating DESC, votes DESC'} or {:sort_mode => :expr, :sort_by => '@weight * ranking'}
+  :order => 'my_order_scope'
+
+For your views see the order helper below.
+
+=== Pagination
+
+Unsimilar to Searchlogic Sphinxsearchlogic does pagination in the search.
+You can add them as follows since all arguments are merged.
+
+ @search = Movie.sphinxsearchlogic(params[:search], :page => params[:page], :per_page => params[:per_page])
+ 
+If not specified default limits and pagination is used. As pagination is 'Always on' with ThinkingSphinx.
+
+== Examples
+
+=== Your controller
+
+An example controller action:
+
+  class MovieController < ApplicationController
+    def index
+      @search = Movie.sphinxsearchlogic(params[:search], :page => params[:page], :per_page => params[:per_page])
+      @movies = @sphinxsearch.results
+    end
+  end
+
+=== Your search forms
+
+An example view search form:
+
+  <% sphinxsearchlogic_form_for @search do |form| %>
+    <p>
+      <%= form.label :all %>
+      <%= form.text_field :all %>
+    </p>
+    <p>
+      <%= form.check_box :scary_movies, {}, '1', nil %>
+      Only scary movies
+    </p>
+  <% end %>
+
+The first field will send search[:all] params which will fulltext search through your data.
+The second is making use of a ThinkingSphinx scope (http://freelancing-god.github.com/ts/en/scopes.html) so it
+only works if you've defined it in your model.
+
+=== Helpers
+
+You can use a similar order helper as Searchlogic offers. You can order by attributes and fields (only if they
+are specified as sortable in your ThinkingSphinx index).
+
+  <%= order(@search, :by => :title, :as => 'Movie Title')
+  
+When you create two ThinkingSphinx scopes in your model you can even do special exotic ordering.
+
+  sphinx_scope(:ascend_by_rating_and_votes) { 
+      {:order => "rating ASC, votes ASC"}
+    }
+
+  sphinx_scope(:descend_by_rating_and_votes) { 
+      {:order => "rating DESC, votes DESC"}
+    }
+
+You can also use this in the helper:
+
+  <%= order(@search, :by => :rating_and_votes, :as => 'Special ordering')
+
+== TODO
+
+Things that might be in next versions. Please contact me via Github if you've any suggestions or want to
+contribute.
+
+=== Sanitize
+
+Sanitize params so we don't f*ck with ThinkingSphinx.
+
+=== Facets
+
+Easy facets (http://freelancing-god.github.com/ts/en/facets.html) support.
+
+=== Defaults
+
+On the Model you want to search specify the defaults for the search. Eg. on the Movie model:
+
+ sphinxsearchlogic_default_order = 'descend_by_weight'
+ sphinxsearchlogic_protected = :order, :per_page, :age, :name, :match_mode
+ sphinxsearchlogic_max_per_page = 100
+ sphinxsearchlogic_match_mode = :any
+ 
+Copyright (c) 2009 Joost Hietbrink, released under the MIT license
