@@ -17,6 +17,18 @@ If you're not familiar with ThinkingSphinx check {this presentation!}[http://www
 == Install
 
 First you need Sphinx and ThinkingSphinx. Simply because they rock. Check the ThinkingSphinx pages for this.
+Use the gem in your environment.rb like:
+
+  config.gem "freelancing-god-thinking-sphinx", :lib => 'thinking_sphinx', :version => '1.2.7'
+
+Install as gem from Github (recommended).
+
+  gem sources -a http://gems.github.com (you only have to do this once)
+  sudo gem install joost-sphinxsearchlogic
+  
+Next use it in your environment.rb like:
+
+  config.gem 'joost-sphinxsearchlogic', :lib => 'sphinxsearchlogic'
 
 Install as plugin from Github.
 
