@@ -19,16 +19,15 @@ If you're not familiar with ThinkingSphinx check {this presentation!}[http://www
 First you need Sphinx and ThinkingSphinx. Simply because they rock. Check the ThinkingSphinx pages for this.
 Use the gem in your environment.rb like:
 
-  config.gem "freelancing-god-thinking-sphinx", :lib => 'thinking_sphinx', :version => '1.2.7'
+  config.gem 'thinking-sphinx', :source => 'http://gemcutter.org'
 
-Install as gem from Github (recommended).
+Install as gem from Gemcutter.org (recommended).
 
-  gem sources -a http://gems.github.com (you only have to do this once)
-  sudo gem install joost-sphinxsearchlogic
+  sudo gem install sphinxsearchlogic -s http://gemcutter.org
   
 Next use it in your environment.rb like:
 
-  config.gem 'joost-sphinxsearchlogic', :lib => 'sphinxsearchlogic'
+  config.gem 'sphinxsearchlogic', :source => 'http://gemcutter.org'
 
 Install as plugin from Github.
 
@@ -158,4 +157,4 @@ On the Model you want to search specify the defaults for the search. Eg. on the 
  sphinxsearchlogic_max_per_page = 100
  sphinxsearchlogic_match_mode = :any
  
-Copyright (c) 2009 Joost Hietbrink, released under the MIT license
+Copyright (c) 2010 Joost Hietbrink, released under the MIT license
