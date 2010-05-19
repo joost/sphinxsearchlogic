@@ -264,6 +264,7 @@ module Sphinxsearchlogic
 
     # Returns the ThinkingSphinx index for the klass we search on.
     def sphinx_index
+      klass.define_indexes if klass.sphinx_indexes.blank?
       klass.sphinx_indexes.first
     end
 
