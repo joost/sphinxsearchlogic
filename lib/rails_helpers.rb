@@ -34,7 +34,7 @@ module Sphinxsearchlogic
         end
         html_options[:class] = css_classes.join(" ")
       end
-      params = controller.params.clone
+      params = controller.params.dup # Stopped using clone, see http://github.com/joost/sphinxsearchlogic/issues#issue/3
       params[options[:params_scope]] ||= {}
       params[options[:params_scope]].merge!(:order => new_scope)
       url_options = {:controller => params[:controller], :action => params[:action], options[:params_scope] => params[options[:params_scope]]}
