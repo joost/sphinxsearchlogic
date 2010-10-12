@@ -206,8 +206,9 @@ module Sphinxsearchlogic
           super
         end
       else
-        if name =~ /^with(out|_all)?_(\w+)(_before_type_cast)?$/
-          attribute_name = $2.to_sym
+        if name =~ /^with(out|_all)?_(\w+)$/
+          attribute_name = $2
+          attribute_name = attribute_name.gsub(/_before_type_cast)$/, '').to_sym
           if is_sphinx_attribute?(attribute_name)
             # Put in with / without / with_all depending on what the regexp matched.
             if $1 == 'out'
